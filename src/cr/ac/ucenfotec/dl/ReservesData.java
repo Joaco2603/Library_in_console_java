@@ -1,23 +1,23 @@
 package cr.ac.ucenfotec.dl;
 
-import cr.ac.ucenfotec.bl.entities.ReserveEntity;
+import cr.ac.ucenfotec.bl.entities.Reserve;
 import java.util.ArrayList;
 
 public class ReservesData {
-    private ArrayList<ReserveEntity> reserves;
+    private ArrayList<Reserve> reserves;
 
     public ReservesData() {
         reserves = new ArrayList<>();
     }
 
-    public void addReserve(ReserveEntity r) {
+    public void addReserve(Reserve r) {
         if (reserves == null) {
             reserves = new ArrayList<>();
         }
         reserves.add(r);
     }
 
-    public ArrayList<ReserveEntity> getReserves() {
+    public ArrayList<Reserve> getReserves() {
         return reserves;
     }
 }

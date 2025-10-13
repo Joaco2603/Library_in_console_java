@@ -1,8 +1,8 @@
 
 package cr.ac.ucenfotec.bl.handlers;
 import cr.ac.ucenfotec.dl.UsersData;
-import cr.ac.ucenfotec.bl.entities.RoleEntity;
-import cr.ac.ucenfotec.bl.entities.UserEntity;
+import cr.ac.ucenfotec.bl.entities.Role;
+import cr.ac.ucenfotec.bl.entities.User;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -13,15 +13,16 @@ public class UserHandler {
 		dataUsers = new UsersData();
 	}
 
-	public void addUser(String username, String email, String password, int roleId) {
+	public User addUser(String first_name, String last_name, String email, String password, int roleId) {
 		RoleHandler roleHandler = new RoleHandler();
-		RoleEntity role = roleHandler.getRoleByName(roleId == 1 ? "Admin" : "User");
-		UserEntity user = new UserEntity(UUID.randomUUID().toString(), username, email, password, role);
+		Role role = roleHandler.getRoleByName(roleId == 1 ? "admin" : "user");
+		User user = new User(UUID.randomUUID().toString(), first_name, last_name, email, password, role);
 		dataUsers.addUser(user);
+		return user;
 	}
 
-	public UserEntity findUserByEmailAndPassword(String email, String password) {
-		for (UserEntity user : dataUsers.getUsers()) {
+	public User findUserByEmailAndPassword(String email, String password) {
+		for (User user : dataUsers.getUsers()) {
 			if (user.getEmail().equals(email) && user.getPassword().equals(password)) {
 				return user;
 			}
@@ -29,7 +30,7 @@ public class UserHandler {
 		return null;
 	}
 
-	public ArrayList<UserEntity> getAllUsers() {
+	public ArrayList<User> getAllUsers() {
 		return dataUsers.getUsers();
 	}
 }

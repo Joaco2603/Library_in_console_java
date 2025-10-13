@@ -1,15 +1,17 @@
 package cr.ac.ucenfotec.bl.entities;
 
-public class UserEntity {
+public class User {
     private String id;
-    private String username;
+    private String first_name;
+    private String last_name;
     private String email;
     private String password;
-    private RoleEntity role;
+    private Role role;
 
-    public UserEntity(String id, String username, String email, String password, RoleEntity role) {
+    public User(String id, String first_name, String last_name, String email, String password, Role role) {
         this.id = id;
-        this.username = username;
+        this.first_name = first_name;
+        this.last_name = last_name;
         this.email = email;
         this.password = password;
         this.role = role;
@@ -23,12 +25,12 @@ public class UserEntity {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
+    public String getFullName() {
+        return first_name + " " + last_name;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setName(String name) {
+        this.first_name = name;
     }
 
     public String getEmail() {
@@ -47,11 +49,15 @@ public class UserEntity {
         this.password = password;
     }
 
-    public RoleEntity getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(RoleEntity role) {
+    public void setRole(Role role) {
         this.role = role;
+    }
+
+    public String toString() {
+        return "ID: " + id + ", Name: " + getFullName() + ", Email: " + email + ", Role: " + role.getRoleName();
     }
 }

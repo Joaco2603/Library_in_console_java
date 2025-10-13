@@ -1,16 +1,16 @@
-# Library in Console (Java)
+# Biblioteca en Consola (Java)
 
-A simple console-based library management system written in Java. This application allows users to register, log in, and manage library operations such as reserving, returning, and searching for books, as well as viewing users.
+Un sencillo sistema de gestión de biblioteca basado en consola escrito en Java. Esta aplicación permite a los usuarios registrarse, iniciar sesión y gestionar operaciones de biblioteca como reservar, devolver y buscar libros, además de ver usuarios.
 
-## Features
-- User registration and login
-- Reserve books
-- Return books
-- Search for books
-- View users
-- Console-based menu navigation
+## Funcionalidades
+- Registro e inicio de sesión de usuarios.
+- Reservar libros.
+- Devolver libros.
+- Buscar libros.
+- Ver usuarios.
+- Navegación mediante menú en consola.
 
-## Folder Structure
+## Estructura de Carpetas
 ```
 src/
   Main.java
@@ -39,21 +39,21 @@ src/
           UI.java
 ```
 
-## How to Run
-1. Compile the project:
+## Cómo Ejecutar
+1. Compilar el proyecto:
    ```
    javac src/cr/ac/ucenfotec/ui/UI.java src/Main.java
    ```
-2. Run the main class:
+2. Ejecutar la clase principal:
    ```
    java -cp src Main
    ```
 
-## Requirements
-- Java 8 or higher
+## Requisitos
+- Java 8 o superior
 
-## Author
-Joaco2603
+## Autor
+Joaquin Alberto Pappa Larreal
 
-## License
-This project is licensed under the MIT License.
+## Licencia
+Este proyecto está licenciado bajo la Licencia MIT.

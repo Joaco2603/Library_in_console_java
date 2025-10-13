@@ -1,11 +1,11 @@
 package cr.ac.ucenfotec.bl.entities;
 
-public class RoleEntity {
+public class Role {
     private int id;
     private String roleName;
     private String description;
 
-    public RoleEntity(int id, String roleName, String description) {
+    public Role(int id, String roleName, String description) {
         this.id = id;
         this.roleName = roleName;
         this.description = description;
@@ -33,5 +33,9 @@ public class RoleEntity {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String toString() {
+        return "ID: " + id + ", Role Name: " + roleName + ", Description: " + description;
     }
 }

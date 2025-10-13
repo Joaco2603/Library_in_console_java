@@ -1,27 +1,23 @@
 package cr.ac.ucenfotec.bl.handlers;
 
+import cr.ac.ucenfotec.bl.entities.Role;
 import java.util.ArrayList;
-import java.util.List;
-
-import cr.ac.ucenfotec.bl.entities.RoleEntity;
+import java.util.UUID;
 
 public class RoleHandler {
-    private List<RoleEntity> roles;
+    private ArrayList<Role> roles;
 
     public RoleHandler() {
         roles = new ArrayList<>();
+        // Initialize default roles
+        roles.add(new Role(1, "admin", "Admin"));
+        roles.add(new Role(2, "user", "User"));
+        roles.add(new Role(3, "librarian", "Librarian"));
     }
 
-    public void addRole(RoleEntity role) {
-        roles.add(role);
-    }
-
-    public List<RoleEntity> getRoles() {
-        return roles;
-    }
-
-    public RoleEntity getRoleByName(String roleName) {
-        for (RoleEntity role : roles) {
+    public Role getRoleByName(String roleName) {
+        for (Role role : roles) {
+            System.out.println(role);
             if (role.getRoleName().equals(roleName)) {
                 return role;
             }
@@ -29,8 +25,11 @@ public class RoleHandler {
         return null;
     }
 
-    public int getDefaultRoleId() {
-        RoleEntity defaultRole = getRoleByName("User");
-        return defaultRole != null ? defaultRole.getId() : -1; // Return -1 if no default role found
+    public int getDefaultRoleId(){
+        return 2;
+    }
+
+    public ArrayList<Role> getRoles() {
+        return roles;
     }
 }

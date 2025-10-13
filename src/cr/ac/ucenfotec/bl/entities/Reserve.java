@@ -1,17 +1,18 @@
 package cr.ac.ucenfotec.bl.entities;
 
-public class ReserveEntity {
-    public ReserveEntity(String reserveDate, String status, BookEntity book, UserEntity user) {
+public class Reserve {
+    private int id;
+    private String reserveDate;
+    private String status;
+    private Book book;
+    private User user;
+
+    public Reserve(String reserveDate, String status, Book book, User user) {
         this.reserveDate = reserveDate;
         this.status = status;
         this.book = book;
         this.user = user;
     }
-    private int id;
-    private String reserveDate;
-    private String status;
-    private BookEntity book;
-    private UserEntity user;
 
     public int getId() {
         return id;
@@ -37,19 +38,24 @@ public class ReserveEntity {
         this.status = status;
     }
 
-    public BookEntity getBook() {
+    public Book getBook() {
         return book;
     }
 
-    public void setBook(BookEntity book) {
+    public void setBook(Book book) {
         this.book = book;
     }
 
-    public UserEntity getUser() {
+    public User getUser() {
         return user;
     }
 
-    public void setUser(UserEntity user) {
+    public void setUser(User user) {
         this.user = user;
+    }
+
+    public String toString() {
+        return "ID: " + id + ", Reserve Date: " + reserveDate + ", Status: " + status + ", Book: [" + book.toString()
+                + "], User: [" + user.toString() + "]";
     }
 }
