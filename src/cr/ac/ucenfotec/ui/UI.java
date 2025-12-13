@@ -1,9 +1,5 @@
 package cr.ac.ucenfotec.ui;
 
-import cr.ac.ucenfotec.bl.entities.User;
-import cr.ac.ucenfotec.bl.entities.Book;
-import cr.ac.ucenfotec.bl.entities.Reserve;
-
 import java.util.List;
 import java.util.Scanner;
 
@@ -114,27 +110,19 @@ public class UI {
         System.out.println("\n✗ No se encontró el libro con el ISBN proporcionado");
     }
 
-    public void displayBookInfo(Book book) {
+    public void displayBookInfo(String bookInfo) {
         System.out.println("\n--- Libro ---");
-        System.out.println("ID: " + book.getId());
-        System.out.println("Título: " + book.getTitle());
-        System.out.println("Autor: " + book.getAuthor());
-        System.out.println("ISBN: " + book.getIsbn());
-        System.out.println("Año: " + book.getYear());
-        System.out.println("Estado: " + (book.isAvailable() ? "Disponible" : "Prestado"));
+        System.out.println(bookInfo);
         System.out.println("-------------");
     }
 
-    public void displayUserInfo(User user) {
+    public void displayUserInfo(String userInfo) {
         System.out.println("\n--- Usuario ---");
-        System.out.println("ID: " + user.getId());
-        System.out.println("Nombre: " + user.getFullName());
-        System.out.println("Email: " + user.getEmail());
-        System.out.println("Rol: " + user.getRole().getRoleName());
+        System.out.println(userInfo);
         System.out.println("---------------");
     }
 
-    public void displayAvailableBooks(List<Book> books) {
+    public void displayAvailableBooks(List<String> books) {
         System.out.println("\n=== Libros Disponibles ===");
         if (books.isEmpty()) {
             System.out.println("No hay libros disponibles en este momento.");
@@ -151,17 +139,16 @@ public class UI {
         System.out.println("\n✗ No se encontró un libro con el ISBN " + isbn + ".");
     }
 
-    public void displayBookReservationNotAvailable(Book book) {
-        System.out.println("\n✗ El libro '" + book.getTitle() + "' ya está reservado o prestado.");
+    public void displayBookReservationNotAvailable(String bookInfo) {
+        System.out.println("\n✗ El libro ya está reservado o prestado: " + bookInfo);
     }
 
-    public void displayBookReservationSuccess(Reserve reserve) {
+    public void displayBookReservationSuccess(String reserveInfo) {
         System.out.println("\n✓ Reserva registrada correctamente.");
-        System.out.println("Fecha de reserva: " + reserve.getReserveDate());
-        displayBookInfo(reserve.getBook());
+        System.out.println(reserveInfo);
     }
 
-    public void displayUserActiveReserves(List<Reserve> reserves) {
+    public void displayUserActiveReserves(List<String> reserves) {
         System.out.println("\n=== Reservas Activas ===");
         if (reserves.isEmpty()) {
             System.out.println("No tienes reservas activas.");
@@ -178,13 +165,13 @@ public class UI {
         System.out.println("\n✗ No se encontró un libro con el ISBN " + isbn + ".");
     }
 
-    public void displayBookReturnNoActiveReservation(Book book) {
-        System.out.println("\n✗ No tienes una reserva activa para el libro '" + book.getTitle() + "'.");
+    public void displayBookReturnNoActiveReservation(String bookInfo) {
+        System.out.println("\n✗ No tienes una reserva activa para el libro: " + bookInfo);
     }
 
-    public void displayBookReturnSuccess(Book book) {
+    public void displayBookReturnSuccess(String bookInfo) {
         System.out.println("\n✓ Devolución registrada correctamente.");
-        displayBookInfo(book);
+        displayBookInfo(bookInfo);
     }
 
     public String getBookSearchQuery() {
@@ -201,7 +188,7 @@ public class UI {
         System.out.println("\n✗ No se encontraron libros que coincidan con '" + query + "'.");
     }
 
-    public void displayBookSearchResults(String query, List<Book> books) {
+    public void displayBookSearchResults(String query, List<String> books) {
         System.out.println("\n=== Resultados de Búsqueda para '" + query + "' ===");
         if (books.isEmpty()) {
             System.out.println("No se encontraron resultados.");
@@ -210,11 +197,9 @@ public class UI {
         books.forEach(this::displayBookInfo);
     }
 
-    private void displayReserveInfo(Reserve reserve) {
+    private void displayReserveInfo(String reserveInfo) {
         System.out.println("\n--- Reserva ---");
-        System.out.println("Libro: " + reserve.getBook().getTitle() + " (ISBN: " + reserve.getBook().getIsbn() + ")");
-        System.out.println("Fecha: " + reserve.getReserveDate());
-        System.out.println("Estado: " + reserve.getStatus());
+        System.out.println(reserveInfo);
         System.out.println("----------------");
     }
 

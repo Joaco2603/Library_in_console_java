@@ -28,6 +28,17 @@ public class Controller {
     // Usuario actualmente logeado
     private User currentUser = null;
 
+    public Controller() {
+        // Registrar shutdown hook para asegurarnos de persistir datos en salida inesperada
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            try {
+                saveAll();
+            } catch (Exception e) {
+                System.err.println("Error during shutdown save: " + e.getMessage());
+            }
+        }));
+    }
+
     public void start() throws IOException {
         int option = -1;
 
@@ -38,7 +49,7 @@ public class Controller {
         } while (!isLogged);
 
         do {
-            if(currentUser.getRole().getRoleName().equals("admin")){
+            if (userHandler.isAdmin(currentUser)) {
                 UIInterface.displayAdminMenu();
                 option = UIInterface.readOption();
                 processAdminOption(option);
@@ -48,6 +59,22 @@ public class Controller {
                 processUserOption(option);
             }
         } while (option != 5);
+
+        // Guardar todos los datos antes de salir normalmente
+        saveAll();
+    }
+
+    /** Persiste los datos manejados por los distintos handlers. */
+    private void saveAll() {
+        try {
+            userHandler.save();
+        } catch (Exception ignored) {}
+        try {
+            bookHandler.save();
+        } catch (Exception ignored) {}
+        try {
+            reserveHandler.save();
+        } catch (Exception ignored) {}
     }
 
     public void processAccess(int option) throws IOException {
@@ -166,7 +193,9 @@ public class Controller {
             return;
         }
 
-        UIInterface.displayAvailableBooks(availableBooks);
+        // Pass string representations to UI (Controller avoids using entity internals)
+        List<String> availableBookStrings = availableBooks.stream().map(Book::toString).toList();
+        UIInterface.displayAvailableBooks(availableBookStrings);
         String isbn = UIInterface.getBookIsbn();
         Book book = bookHandler.findBookByIsbn(isbn);
 
@@ -176,13 +205,13 @@ public class Controller {
         }
 
         if (!book.isAvailable()) {
-            UIInterface.displayBookReservationNotAvailable(book);
+            UIInterface.displayBookReservationNotAvailable(book.toString());
             return;
         }
 
         Reserve reserve = reserveHandler.addReserve(LocalDate.now().toString(), "ACTIVE", book, currentUser);
         book.setAvailable(false);
-        UIInterface.displayBookReservationSuccess(reserve);
+        UIInterface.displayBookReservationSuccess(reserve.toString());
     }
 
     public void processBookReturn(int option) {
@@ -193,7 +222,8 @@ public class Controller {
             return;
         }
 
-        UIInterface.displayUserActiveReserves(activeReserves);
+        List<String> reserveStrings = activeReserves.stream().map(Reserve::toString).toList();
+        UIInterface.displayUserActiveReserves(reserveStrings);
         String isbn = UIInterface.getBookIsbn();
         Book book = bookHandler.findBookByIsbn(isbn);
 
@@ -205,13 +235,13 @@ public class Controller {
         Reserve activeReserve = reserveHandler.findActiveReserveByBookAndUser(book, currentUser);
 
         if (activeReserve == null) {
-            UIInterface.displayBookReturnNoActiveReservation(book);
+            UIInterface.displayBookReturnNoActiveReservation(book.toString());
             return;
         }
 
         book.setAvailable(true);
         reserveHandler.updateReserveStatus(activeReserve, "RETURNED");
-        UIInterface.displayBookReturnSuccess(book);
+        UIInterface.displayBookReturnSuccess(book.toString());
     }
 
     public void processBookSearch(int option) {
@@ -227,12 +257,13 @@ public class Controller {
         if (results.isEmpty()) {
             UIInterface.displayBookSearchNoResults(query);
         } else {
-            UIInterface.displayBookSearchResults(query, results);
+            List<String> resultStrings = results.stream().map(Book::toString).toList();
+            UIInterface.displayBookSearchResults(query, resultStrings);
         }
     }
 
     public void displayUsers() {
-        userHandler.getAllUsers().forEach(user -> UIInterface.displayUserInfo(user));
+        userHandler.getAllUsers().forEach(user -> UIInterface.displayUserInfo(user.toString()));
     }
 
     private void processAddBook() {
@@ -258,6 +289,6 @@ public class Controller {
     }
 
     private void displayAllBooks() {
-        bookHandler.getAllBooks().forEach(book -> UIInterface.displayBookInfo(book));
+        bookHandler.getAllBooks().forEach(book -> UIInterface.displayBookInfo(book.toString()));
     }
 }

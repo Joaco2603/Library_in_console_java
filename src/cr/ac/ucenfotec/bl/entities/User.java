@@ -1,44 +1,19 @@
 package cr.ac.ucenfotec.bl.entities;
 
-public class User {
-    private String id;
-    private String first_name;
-    private String last_name;
-    private String email;
+import java.util.Objects;
+
+/**
+ * Representa un usuario del sistema (hereda de {@link Person}).
+ * Contiene credenciales y el rol.
+ */
+public class User extends Person {
     private String password;
     private Role role;
 
     public User(String id, String first_name, String last_name, String email, String password, Role role) {
-        this.id = id;
-        this.first_name = first_name;
-        this.last_name = last_name;
-        this.email = email;
+        super(id, first_name, last_name, email);
         this.password = password;
         this.role = role;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getFullName() {
-        return first_name + " " + last_name;
-    }
-
-    public void setName(String name) {
-        this.first_name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getPassword() {
@@ -57,7 +32,23 @@ public class User {
         this.role = role;
     }
 
+    @Override
     public String toString() {
-        return "ID: " + id + ", Name: " + getFullName() + ", Email: " + email + ", Role: " + role.getRoleName();
+        return "ID: " + getId() + ", Name: " + getFullName() + ", Email: " + getEmail() + ", Role: " + role.getRoleName();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(getId(), user.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
+    }
+
+    // toCSV removed per request - persistence handled in DAO implementations
 }

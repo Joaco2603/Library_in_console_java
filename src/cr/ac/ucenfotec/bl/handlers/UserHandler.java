@@ -1,17 +1,23 @@
 
 package cr.ac.ucenfotec.bl.handlers;
-import cr.ac.ucenfotec.dl.UsersData;
+import cr.ac.ucenfotec.dl.dao.UserDAO;
+import cr.ac.ucenfotec.dl.jdbc.UsersDAOJdbc;
 import cr.ac.ucenfotec.bl.entities.Role;
 import cr.ac.ucenfotec.bl.entities.User;
 import java.util.ArrayList;
 import java.util.UUID;
 
 public class UserHandler {
-	private UsersData dataUsers;
+	private UserDAO dataUsers;
 
 	public UserHandler() {
-		dataUsers = new UsersData();
+		dataUsers = new UsersDAOJdbc();
 	}
+
+    /**
+     * Handler para operaciones relacionadas con usuarios. Actúa como capa
+     * intermedia entre la UI y el DAO (`UsersData`).
+     */
 
 	public User addUser(String first_name, String last_name, String email, String password, int roleId) {
 		RoleHandler roleHandler = new RoleHandler();
@@ -32,5 +38,19 @@ public class UserHandler {
 
 	public ArrayList<User> getAllUsers() {
 		return dataUsers.getUsers();
+	}
+
+	/** Persiste los usuarios al almacenamiento. */
+	public void save() {
+		dataUsers.save();
+	}
+
+	/**
+	 * Indica si el usuario tiene rol 'admin'.
+	 */
+	public boolean isAdmin(User user) {
+		if (user == null) return false;
+		if (user.getRole() == null) return false;
+		return "admin".equalsIgnoreCase(user.getRole().getRoleName());
 	}
 }

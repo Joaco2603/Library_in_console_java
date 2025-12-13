@@ -1,5 +1,11 @@
 package cr.ac.ucenfotec.bl.entities;
 
+import java.util.Objects;
+
+/**
+ * Entidad que representa un libro en la biblioteca.
+ * Contiene metadatos básicos y estado de disponibilidad.
+ */
 public class Book {
     private int id;
     private String title;
@@ -65,7 +71,22 @@ public class Book {
         this.available = available;
     }
 
+    @Override
     public String toString() {
         return "ID: " + id + ", Title: " + title + ", Author: " + author + ", ISBN: " + isbn + ", Year: " + year + ", Available: " + available;
     }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Book book = (Book) o;
+        return id == book.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    // toCSV removed per request - persistence handled in DAOs
 }

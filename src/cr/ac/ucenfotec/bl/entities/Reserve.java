@@ -1,6 +1,14 @@
 package cr.ac.ucenfotec.bl.entities;
 
-public class Reserve {
+import cr.ac.ucenfotec.bl.interfaces.Assignable;
+import cr.ac.ucenfotec.bl.entities.Book;
+import cr.ac.ucenfotec.bl.entities.User;
+
+/**
+ * Representa una reserva de un libro por parte de un usuario.
+ * Implementa {@link Assignable} para mostrar un contrato simple de asignación.
+ */
+public class Reserve implements Assignable {
     private int id;
     private String reserveDate;
     private String status;
@@ -54,8 +62,23 @@ public class Reserve {
         this.user = user;
     }
 
+    @Override
+    public boolean assignTo(User user) {
+        if (user == null) return false;
+        this.user = user;
+        return true;
+    }
+    // toCSV removed per request - persistence handled in DAOs
+
+    @Override
+    public String toCSV() {
+        String bookIsbn = (book != null) ? book.getIsbn() : "";
+        String userId = (user != null) ? user.getId() : "";
+        return id + "," + reserveDate + "," + status + "," + bookIsbn + "," + userId;
+    }
+
     public String toString() {
         return "ID: " + id + ", Reserve Date: " + reserveDate + ", Status: " + status + ", Book: [" + book.toString()
-                + "], User: [" + user.toString() + "]";
+                + "], User: [" + (user != null ? user.toString() : "none") + "]";
     }
 }
