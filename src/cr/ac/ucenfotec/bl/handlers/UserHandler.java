@@ -1,7 +1,6 @@
 
 package cr.ac.ucenfotec.bl.handlers;
 import cr.ac.ucenfotec.dl.dao.UserDAO;
-import cr.ac.ucenfotec.dl.jdbc.UsersDAOJdbc;
 import cr.ac.ucenfotec.bl.entities.Role;
 import cr.ac.ucenfotec.bl.entities.User;
 import java.util.ArrayList;
@@ -9,10 +8,6 @@ import java.util.UUID;
 
 public class UserHandler {
 	private UserDAO dataUsers;
-
-	public UserHandler() {
-		dataUsers = new UsersDAOJdbc();
-	}
 
     /**
      * Handler para operaciones relacionadas con usuarios. Actúa como capa

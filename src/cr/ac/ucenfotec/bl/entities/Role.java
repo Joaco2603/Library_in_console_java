@@ -15,8 +15,8 @@ public class Role {
         return id;
     }
 
-    public int setId(int id) {
-        return this.id = id;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getRoleName() {

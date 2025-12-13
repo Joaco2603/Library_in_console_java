@@ -11,12 +11,14 @@ import cr.ac.ucenfotec.bl.entities.Reserve;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Scanner;
 
 import java.io.IOException;
 
 public class Controller {
     // Instancia de la clase UI para manejar la interfaz de usuario
     private final UI UIInterface = new UI();
+    private final Scanner scanner = new Scanner(System.in);
     // Handler para manejar usuarios
     private final UserHandler userHandler = new UserHandler();
     // Handler para manejar libros
@@ -86,14 +88,14 @@ public class Controller {
                 processRegister();
                 break;
             default:
-                UIInterface.displayError();
+                displayError();
                 break;
         }
     }
 
     public void processLogin() {
         // Solicitar credenciales al usuario
-        String[] credentials = UIInterface.getLoginCredentials();
+        String[] credentials = getLoginCredentials();
         String email = credentials[0];
         String password = credentials[1];
 
@@ -103,16 +105,16 @@ public class Controller {
         if (user != null) {
             this.currentUser = user;
             isLogged = true;
-            UIInterface.displayLoginSuccess(user.getFullName());
+            displayLoginSuccess(user.getFullName());
         } else {
-            UIInterface.displayLoginFailure();
+            displayLoginFailure();
             isLogged = false;
         }
     }
 
     public void processRegister() {
         // Solicitar datos de registro al usuario
-        String[] registerData = UIInterface.getRegisterData();
+        String[] registerData = getRegisterData();
         String first_name = registerData[0];
         String last_name = registerData[1];
         String password = registerData[2];
@@ -123,7 +125,7 @@ public class Controller {
         // Agregar el usuario al sistema
         this.currentUser = userHandler.addUser(first_name, last_name, email, password, roleHandler.getDefaultRoleId());
 
-        UIInterface.displayRegisterSuccess();
+        displayRegisterSuccess();
         isLogged = true;
     }
 
@@ -149,10 +151,10 @@ public class Controller {
                     displayUsers();
                     break;
                 case 5:
-                    UIInterface.displayExit();
+                    displayExit();
                     break;
                 default:
-                    UIInterface.displayError();
+                    displayError();
                     break;
             }
         } while (option != 5);
@@ -176,10 +178,10 @@ public class Controller {
                     displayUsers();
                     break;
                 case 5:
-                    UIInterface.displayExit();
+                    displayExit();
                     break;
                 default:
-                    UIInterface.displayError();
+                    displayError();
                     break;
             }
         } while (option != 5);
@@ -189,106 +191,273 @@ public class Controller {
         List<Book> availableBooks = bookHandler.getAvailableBooks();
 
         if (availableBooks.isEmpty()) {
-            UIInterface.displayBookReservationNoAvailableBooks();
+            displayBookReservationNoAvailableBooks();
             return;
         }
 
         // Pass string representations to UI (Controller avoids using entity internals)
         List<String> availableBookStrings = availableBooks.stream().map(Book::toString).toList();
-        UIInterface.displayAvailableBooks(availableBookStrings);
-        String isbn = UIInterface.getBookIsbn();
+        displayAvailableBooks(availableBookStrings);
+        String isbn = getBookIsbn();
         Book book = bookHandler.findBookByIsbn(isbn);
 
         if (book == null) {
-            UIInterface.displayBookReservationBookNotFound(isbn);
+            displayBookReservationBookNotFound(isbn);
             return;
         }
 
         if (!book.isAvailable()) {
-            UIInterface.displayBookReservationNotAvailable(book.toString());
+            displayBookReservationNotAvailable(book.toString());
             return;
         }
 
         Reserve reserve = reserveHandler.addReserve(LocalDate.now().toString(), "ACTIVE", book, currentUser);
         book.setAvailable(false);
-        UIInterface.displayBookReservationSuccess(reserve.toString());
+        displayBookReservationSuccess(reserve.toString());
     }
 
     public void processBookReturn(int option) {
         List<Reserve> activeReserves = reserveHandler.getActiveReservesByUser(currentUser);
 
         if (activeReserves.isEmpty()) {
-            UIInterface.displayBookReturnNoReservations();
+            displayBookReturnNoReservations();
             return;
         }
 
         List<String> reserveStrings = activeReserves.stream().map(Reserve::toString).toList();
-        UIInterface.displayUserActiveReserves(reserveStrings);
-        String isbn = UIInterface.getBookIsbn();
+        displayUserActiveReserves(reserveStrings);
+        String isbn = getBookIsbn();
         Book book = bookHandler.findBookByIsbn(isbn);
 
         if (book == null) {
-            UIInterface.displayBookReturnBookNotFound(isbn);
+            displayBookReturnBookNotFound(isbn);
             return;
         }
 
         Reserve activeReserve = reserveHandler.findActiveReserveByBookAndUser(book, currentUser);
 
         if (activeReserve == null) {
-            UIInterface.displayBookReturnNoActiveReservation(book.toString());
+            displayBookReturnNoActiveReservation(book.toString());
             return;
         }
 
         book.setAvailable(true);
         reserveHandler.updateReserveStatus(activeReserve, "RETURNED");
-        UIInterface.displayBookReturnSuccess(book.toString());
+        displayBookReturnSuccess(book.toString());
     }
 
     public void processBookSearch(int option) {
-        String query = UIInterface.getBookSearchQuery();
+        String query = getBookSearchQuery();
 
         if (query == null || query.trim().isEmpty()) {
-            UIInterface.displayBookSearchInvalidQuery();
+            displayBookSearchInvalidQuery();
             return;
         }
 
         List<Book> results = bookHandler.searchBooks(query.trim());
 
         if (results.isEmpty()) {
-            UIInterface.displayBookSearchNoResults(query);
+            displayBookSearchNoResults(query);
         } else {
             List<String> resultStrings = results.stream().map(Book::toString).toList();
-            UIInterface.displayBookSearchResults(query, resultStrings);
+            displayBookSearchResults(query, resultStrings);
         }
     }
 
     public void displayUsers() {
-        userHandler.getAllUsers().forEach(user -> UIInterface.displayUserInfo(user.toString()));
+        userHandler.getAllUsers().forEach(user -> displayUserInfo(user.toString()));
     }
 
     private void processAddBook() {
-        String[] bookData = UIInterface.getBookData();
+        String[] bookData = getBookData();
         String title = bookData[0];
         String author = bookData[1];
         String isbn = bookData[2];
         int year = Integer.parseInt(bookData[3]);
         
         bookHandler.addBook(title, author, isbn, year);
-        UIInterface.displayBookAddSuccess();
+        displayBookAddSuccess();
     }
 
     private void processDeleteBook() {
-        String isbn = UIInterface.getBookIsbn();
+        String isbn = getBookIsbn();
         boolean deleted = bookHandler.deleteBookByIsbn(isbn);
         
         if (deleted) {
-            UIInterface.displayBookDeleteSuccess();
+            displayBookDeleteSuccess();
         } else {
-            UIInterface.displayBookDeleteFailure();
+            displayBookDeleteFailure();
         }
     }
 
     private void displayAllBooks() {
-        bookHandler.getAllBooks().forEach(book -> UIInterface.displayBookInfo(book.toString()));
+        bookHandler.getAllBooks().forEach(book -> displayBookInfo(book.toString()));
+    }
+
+    // ===== Métodos de UI movidos al Controller =====
+    
+    public String[] getLoginCredentials() {
+        System.out.println("\n=== Iniciar Sesión ===");
+        System.out.print("Email: ");
+        String email = scanner.nextLine();
+        System.out.print("Contraseña: ");
+        String password = scanner.nextLine();
+        return new String[]{email, password};
+    }
+
+    public String[] getRegisterData() {
+        System.out.println("\n=== Registro ===");
+        System.out.print("Nombre de usuario: ");
+        String name = scanner.nextLine();
+        System.out.print("Apellido: ");
+        String lastName = scanner.nextLine();
+        System.out.print("Email: ");
+        String email = scanner.nextLine();
+        System.out.print("Contraseña: ");
+        String password = scanner.nextLine();
+        return new String[]{name, lastName, password, email};
+    }
+
+    public String[] getBookData() {
+        System.out.println("\n=== Agregar Libro ===");
+        System.out.print("Título: ");
+        String title = scanner.nextLine();
+        System.out.print("Autor: ");
+        String author = scanner.nextLine();
+        System.out.print("ISBN: ");
+        String isbn = scanner.nextLine();
+        System.out.print("Año de publicación: ");
+        String year = scanner.nextLine();
+        return new String[]{title, author, isbn, year};
+    }
+
+    public String getBookIsbn() {
+        System.out.print("\nIngrese el ISBN del libro: ");
+        return scanner.nextLine();
+    }
+
+    public void displayLoginSuccess(String username) {
+        System.out.println("\n✓ Bienvenido " + username + "!");
+    }
+
+    public void displayLoginFailure() {
+        System.out.println("\n✗ Credenciales incorrectas");
+    }
+
+    public void displayRegisterSuccess() {
+        System.out.println("\n✓ Usuario registrado exitosamente");
+    }
+
+    public void displayBookAddSuccess() {
+        System.out.println("\n✓ Libro agregado exitosamente");
+    }
+
+    public void displayBookDeleteSuccess() {
+        System.out.println("\n✓ Libro eliminado exitosamente");
+    }
+
+    public void displayBookDeleteFailure() {
+        System.out.println("\n✗ No se encontró el libro con el ISBN proporcionado");
+    }
+
+    public void displayBookInfo(String bookInfo) {
+        System.out.println("\n--- Libro ---");
+        System.out.println(bookInfo);
+        System.out.println("-------------");
+    }
+
+    public void displayUserInfo(String userInfo) {
+        System.out.println("\n--- Usuario ---");
+        System.out.println(userInfo);
+        System.out.println("---------------");
+    }
+
+    public void displayAvailableBooks(List<String> books) {
+        System.out.println("\n=== Libros Disponibles ===");
+        if (books.isEmpty()) {
+            System.out.println("No hay libros disponibles en este momento.");
+            return;
+        }
+        books.forEach(this::displayBookInfo);
+    }
+
+    public void displayBookReservationNoAvailableBooks() {
+        System.out.println("\n✗ No hay libros disponibles para reservar en este momento.");
+    }
+
+    public void displayBookReservationBookNotFound(String isbn) {
+        System.out.println("\n✗ No se encontró un libro con el ISBN " + isbn + ".");
+    }
+
+    public void displayBookReservationNotAvailable(String bookInfo) {
+        System.out.println("\n✗ El libro ya está reservado o prestado: " + bookInfo);
+    }
+
+    public void displayBookReservationSuccess(String reserveInfo) {
+        System.out.println("\n✓ Reserva registrada correctamente.");
+        System.out.println(reserveInfo);
+    }
+
+    public void displayUserActiveReserves(List<String> reserves) {
+        System.out.println("\n=== Reservas Activas ===");
+        if (reserves.isEmpty()) {
+            System.out.println("No tienes reservas activas.");
+            return;
+        }
+        reserves.forEach(this::displayReserveInfo);
+    }
+
+    public void displayBookReturnNoReservations() {
+        System.out.println("\n✗ No tienes reservas activas para devolver.");
+    }
+
+    public void displayBookReturnBookNotFound(String isbn) {
+        System.out.println("\n✗ No se encontró un libro con el ISBN " + isbn + ".");
+    }
+
+    public void displayBookReturnNoActiveReservation(String bookInfo) {
+        System.out.println("\n✗ No tienes una reserva activa para el libro: " + bookInfo);
+    }
+
+    public void displayBookReturnSuccess(String bookInfo) {
+        System.out.println("\n✓ Devolución registrada correctamente.");
+        displayBookInfo(bookInfo);
+    }
+
+    public String getBookSearchQuery() {
+        System.out.println("\n=== Buscar Libro ===");
+        System.out.print("Ingrese título, autor o ISBN: ");
+        return scanner.nextLine();
+    }
+
+    public void displayBookSearchInvalidQuery() {
+        System.out.println("\n✗ La consulta de búsqueda no puede estar vacía.");
+    }
+
+    public void displayBookSearchNoResults(String query) {
+        System.out.println("\n✗ No se encontraron libros que coincidan con '" + query + "'.");
+    }
+
+    public void displayBookSearchResults(String query, List<String> books) {
+        System.out.println("\n=== Resultados de Búsqueda para '" + query + "' ===");
+        if (books.isEmpty()) {
+            System.out.println("No se encontraron resultados.");
+            return;
+        }
+        books.forEach(this::displayBookInfo);
+    }
+
+    private void displayReserveInfo(String reserveInfo) {
+        System.out.println("\n--- Reserva ---");
+        System.out.println(reserveInfo);
+        System.out.println("----------------");
+    }
+
+    public void displayExit() {
+        System.out.println("\n¡Hasta pronto!");
+    }
+
+    public void displayError() {
+        System.out.println("\n✗ Opción inválida. Intente nuevamente.");
     }
 }

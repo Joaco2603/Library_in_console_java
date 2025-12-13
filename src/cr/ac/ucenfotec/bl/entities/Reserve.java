@@ -70,13 +70,6 @@ public class Reserve implements Assignable {
     }
     // toCSV removed per request - persistence handled in DAOs
 
-    @Override
-    public String toCSV() {
-        String bookIsbn = (book != null) ? book.getIsbn() : "";
-        String userId = (user != null) ? user.getId() : "";
-        return id + "," + reserveDate + "," + status + "," + bookIsbn + "," + userId;
-    }
-
     public String toString() {
         return "ID: " + id + ", Reserve Date: " + reserveDate + ", Status: " + status + ", Book: [" + book.toString()
                 + "], User: [" + (user != null ? user.toString() : "none") + "]";

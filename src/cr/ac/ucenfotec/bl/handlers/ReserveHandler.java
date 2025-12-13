@@ -1,7 +1,6 @@
 
 package cr.ac.ucenfotec.bl.handlers;
 import cr.ac.ucenfotec.dl.dao.ReserveDAO;
-import cr.ac.ucenfotec.dl.jdbc.ReservesDAOJdbc;
 import cr.ac.ucenfotec.bl.entities.Reserve;
 import cr.ac.ucenfotec.bl.entities.Book;
 import cr.ac.ucenfotec.bl.entities.User;
@@ -9,10 +8,6 @@ import java.util.ArrayList;
 
 public class ReserveHandler {
 	private ReserveDAO dataReserves;
-
-	public ReserveHandler() {
-		dataReserves = new ReservesDAOJdbc();
-	}
 
     /**
      * Handler encargado de operaciones sobre reservas. Utiliza `ReservesData` para la persistencia.

@@ -1,9 +1,9 @@
 
 package cr.ac.ucenfotec.bl.handlers;
 
-import cr.ac.ucenfotec.dl.dao.BookDAO;
-import cr.ac.ucenfotec.dl.jdbc.BooksDAOJdbc;
 import cr.ac.ucenfotec.bl.entities.Book;
+import cr.ac.ucenfotec.dl.dao.BookDAO;
+import cr.ac.ucenfotec.dl.dao.BookDAOMySQL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +16,11 @@ public class BookHandler {
     private int nextId;
 
     public BookHandler() {
-        this.data = new BooksDAOJdbc();
+        this(new BookDAOMySQL());
+    }
+
+    public BookHandler(BookDAO dao) {
+        this.data = dao;
         this.nextId = calculateNextId();
 
         // if no books exist, add some defaults
